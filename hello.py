@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, request
 import markdown2
 from flask import render_template
 import glob
@@ -9,6 +9,15 @@ app = Flask(__name__)
 
 CONTENT_DIR = "../eten/"
 
+@app.route('/opslaan',methods = ['POST', 'GET'] )
+def opslaan():
+  if request.method == 'POST':
+    return render_template("result.html", result = request.form)
+
+@app.route('/toevoegen')
+def toevoegen():
+  return render_template("toevoegen.html")
+
 
 @app.route('/lijst')
 def toon_lijst():
@@ -18,8 +27,6 @@ def toon_lijst():
     lijst.append({'title': l,'url': url_for('toon_artikel',artikel_id=os.path.basename(l)) })
     
   return render_template('list.html',files=lijst,name="lijst")
-
-
 
 @app.route('/artikel/<artikel_id>')
 def toon_artikel(artikel_id):
