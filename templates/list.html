@@ -6,15 +6,15 @@
 
 {% block header %}
 {% if name %}
-  <h1>Lijst {{ name }}!</h1>
+  Lijst {{ name }}!
 {% endif %}
 {% endblock %}
 
 {% block content %}
-{% if files %}
+{% if rows %}
 <ul>
-{% for f in files %}
-  <li><a href="{{ f.url }}">{{ f.title }}</a></div>
+{% for f in rows %}
+  <li><a href="{{url_for ('toon_artikel', artikel_id = f.id)}}">{{ f.titel }}</a></li>
 {% endfor %}
 </ul>
 {% endif%}
