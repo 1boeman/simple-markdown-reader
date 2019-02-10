@@ -10,7 +10,8 @@ import re
 
 app = Flask(__name__)
 
-with open("config.yml", 'r') as ymlfile:
+config_file = os.path.join(os.path.dirname(__file__), 'config.yml')  
+with open(config_file, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 DB = cfg['db']['file']
 
@@ -21,6 +22,10 @@ def get_db():
 @app.errorhandler(404)
 def page_not_found(e):
   return render_template('404.html'), 404
+
+@app.route('/iii')
+def info():
+  return config_file
 
 
 @app.route('/opslaan',methods = ['POST', 'GET'] )
@@ -36,7 +41,7 @@ def toevoegen():
   return render_template("toevoegen.html")
 
 
-@app.route('/lijst')
+@app.route('/')
 def toon_lijst():
   # load article
   lijst = []
