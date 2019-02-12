@@ -5,17 +5,31 @@
 
 
 {% block header %}
-  <h1>Toevoegen</h1>
+  {% if artikel  %}
+    <h1>Aanpassen</h1>
+  {% else %}
+    <h1>Toevoegen</h1>
+  {% endif %}   
 {% endblock %}
 
 {% block content %}
-  <form action = "/opslaan" method = "POST">
-    <input type="hidden" name = "id" value="0">
-    <p>Titel: <input type = "text" name = "titel" /></p>
-    <p>Ingredienten: <textarea name = "ingredienten"></textarea></p>
-    <p>Bereidingstijd: <input type="number" name="tijd" step="5" /> minuten</p>
-    <p>Aantal personen: <input type="number" name = "personen" /></p>
-    <p>Bereiding: <textarea  name = "bereiding"></textarea></p>
+  <form action = "{{ url_for('opslaan') }}" method = "POST">
+    {% if artikel %}
+      <input type="hidden" name = "id" value="{{ artikel.id }}">
+    {% else %}
+      <input type="hidden" name = "id" value="0">
+    {% endif %}
+    <p>Titel: <input type = "text" name = "titel"
+
+    {% if artikel %} 
+      value="{{ artikel.titel }}"
+    {% endif %}
+    /></p>
+    <p>Ingredienten: <textarea name = "ingredienten">{% if artikel %}{{ artikel.ingredienten }}{% endif %}</textarea></p>
+    <p>Bereidingstijd: <input type="number" name="tijd" 
+{% if artikel %}value="{{ artikel.tijd }}"{% endif %} /> minuten</p>
+    <p>Aantal personen: <input type="number" name = "personen" {% if artikel %}value="{{ artikel.personen }}"{% endif %}  /></p>
+    <p>Bereiding: <textarea  name = "bereiding">{% if artikel %}{{ artikel.bereiding }}{% endif %}</textarea></p>
 
     <p><input type = "submit" value = "submit" /></p>
   </form>

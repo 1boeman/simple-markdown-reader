@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, flash, redirect,session
 import markdown2
 import sqlite3
 from flask import render_template
@@ -14,6 +14,7 @@ config_file = os.path.join(os.path.dirname(__file__), 'config.yml')
 with open(config_file, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 DB = cfg['db']['file']
+app.secret_key = bytes (cfg['app_secret'])
 
 def get_db():
   conn = sqlite3.connect(DB)
@@ -27,7 +28,6 @@ def page_not_found(e):
 def info():
   return config_file
 
-
 @app.route('/opslaan',methods = ['POST', 'GET'] )
 def opslaan():
   if request.method == 'POST':
@@ -35,6 +35,17 @@ def opslaan():
     return render_template("result.html", result = request.form)
   else:
     return render_template('404.html'), 404
+
+@app.route('/verwijderen/<artikel_id>')
+def verwijderen(artikel_id):
+  conn = get_db()
+  c = conn.cursor()
+  c.execute(''' delete from recepten where id = ? ''', [artikel_id])
+  conn.commit()
+  conn.close()
+ 
+  flash( artikel_id+ ' is echt helemaal verwijderd')
+  return redirect(url_for('toon_aanpassen_lijst'), code=302)
 
 @app.route('/toevoegen')
 def toevoegen():
@@ -52,6 +63,30 @@ def toon_lijst():
   rows = c.fetchall() 
 
   return render_template('list.html',rows=rows,name="Recepten")
+
+@app.route('/aanpassen')
+def toon_aanpassen_lijst():
+  # load article
+  lijst = []
+  conn = get_db()
+  conn.row_factory = sqlite3.Row
+  c = conn.cursor()
+  c.execute('select * from recepten') 
+  rows = c.fetchall() 
+
+  return render_template('list.html',rows=rows,name="Recepten",edit=True)
+
+@app.route('/wijzig_artikel/<artikel_id>')
+def wijzig_artikel(artikel_id):
+  conn = get_db()
+  conn.row_factory = sqlite3.Row
+  c = conn.cursor()
+  c.execute('select * from recepten where id = ?',(artikel_id)) 
+  result = c.fetchone()
+  content = dict(result)
+  
+  return render_template('toevoegen.html',artikel=content)
+ 
 
 @app.route('/artikel/<artikel_id>')
 def toon_artikel(artikel_id):

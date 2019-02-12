@@ -11,10 +11,29 @@
 {% endblock %}
 
 {% block content %}
+
+{% if edit %}
+<p>
+  <a href="{{ url_for('toevoegen') }}" class="btn btn-primary">Artikel toevoegen  </a>
+
+</p>
+
+{% endif  %}
+
 {% if rows %}
 <ul>
 {% for f in rows %}
-  <li><a href="{{url_for ('toon_artikel', artikel_id = f.id)}}">{{ f.titel }}</a></li>
+  <li class="my-2">
+    
+    {% if edit %}
+    <a href="{{ url_for ('wijzig_artikel',artikel_id = f.id)}}" class="btn btn-sm btn-primary"> Aanpassen  </a>
+    - <a href="{{ url_for('verwijderen', artikel_id = f.id)  }}" class="btn btn-sm btn-danger" onclick="return confirm('Echt zeker weten joh?')">Verwijderen</a>
+    -
+
+    {% endif  %}
+    <a href="{{url_for ('toon_artikel', artikel_id = f.id)}}">{{ f.titel }}</a>
+
+</li>
 {% endfor %}
 </ul>
 {% endif%}

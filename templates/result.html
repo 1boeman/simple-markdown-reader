@@ -6,18 +6,23 @@
 {% block header %}
   <h1>Resultaatje!</h1>
 {% endblock %}
-
 {% block content %}
-      <table border = 1>
-         {% for key, value in result.items() %}
-         
-            <tr>
-               <th> {{ key }} </th>
-               <td> {{ value }} </td>
-            </tr>
-            
-         {% endfor %}
-      </table>
+
+<p> <a href="{{url_for('toon_lijst')}}"> Terug naar lijst</a> | 
+    <a href="{{url_for('toon_aanpassen_lijst')}}"> Aanpassen</a>  
+ 
+</p>
+
+  <table border = 1>
+     {% for key, value in result.items() %}
+     
+        <tr>
+           <th> {{ key }} </th>
+           <td> {{ value }} </td>
+        </tr>
+        
+     {% endfor %}
+  </table>
 
 {% endblock %}
 
