@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-{% if name %}
-  {{ name }}
-{% endif %}
+  {{ content.titel }}
 {% endblock %}
 
 
@@ -11,6 +9,11 @@
 {% endblock %}
 
 {% block content %}
+  <p><em>{{content.personen|safe}} personen</em> | <em>{{content.tijd|safe}} minuten</em></p>
+ 
+
+  <h2>Ingredi&euml;nten</h2>
   {{content.ingredienten|safe}}
+  <h2>Bereiding</h2>
   {{content.bereiding|safe}}
 {% endblock %}

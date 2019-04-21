@@ -19,19 +19,30 @@
     {% else %}
       <input type="hidden" name = "id" value="0">
     {% endif %}
-    <p>Titel: <input type = "text" name = "titel"
+    <div class="form-group">
+      <label for="titel">Titel</label> 
+      <input class="form-control" id="titel" type = "text" name = "titel"
+      {% if artikel %} 
+        value="{{ artikel.titel }}"
+      {% endif %}/>
+    </div>
+    <div class="form-group">
+      <label for="ingredienten">Ingredienten</label> 
+      <textarea id="ingredienten" class="form-control" rows="6" name = "ingredienten">{% if artikel %}{{ artikel.ingredienten }}{% endif %}</textarea>
+    </div>
+    <div class="form-group"><label for="tijd">Bereidingstijd</label> 
+      <input id="tijd" type="number" class="form-control"  name="tijd" {% if artikel %}value="{{ artikel.tijd }}"{% endif %} />
+      <small class="form-text"> minuten</small>
+      </div>
+    <div class="form-group">
+        <label for="personen">Aantal personen</label> 
+        <input type="number" class="form-control" id="personen"  name = "personen" {% if artikel %}value="{{ artikel.personen }}"{% endif %}  /></div>
+    <div class="form-group">
+        <label for="bereiding">Bereiding</label> 
+        <textarea id="bereiding" class="form-control"  rows="8" name = "bereiding">{% if artikel %}{{ artikel.bereiding }}{% endif %}</textarea>
+    </div>
 
-    {% if artikel %} 
-      value="{{ artikel.titel }}"
-    {% endif %}
-    /></p>
-    <p>Ingredienten: <textarea name = "ingredienten">{% if artikel %}{{ artikel.ingredienten }}{% endif %}</textarea></p>
-    <p>Bereidingstijd: <input type="number" name="tijd" 
-{% if artikel %}value="{{ artikel.tijd }}"{% endif %} /> minuten</p>
-    <p>Aantal personen: <input type="number" name = "personen" {% if artikel %}value="{{ artikel.personen }}"{% endif %}  /></p>
-    <p>Bereiding: <textarea  name = "bereiding">{% if artikel %}{{ artikel.bereiding }}{% endif %}</textarea></p>
-
-    <p><input type = "submit" value = "submit" /></p>
+    <input type = "submit" value = "submit" class="btn btn-primary" />
   </form>
 
 {% endblock %}

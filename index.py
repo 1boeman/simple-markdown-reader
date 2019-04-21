@@ -59,7 +59,7 @@ def toon_lijst():
   conn = get_db()
   conn.row_factory = sqlite3.Row
   c = conn.cursor()
-  c.execute('select * from recepten') 
+  c.execute('select * from recepten order by titel') 
   rows = c.fetchall() 
 
   return render_template('list.html',rows=rows,name="Recepten")
@@ -71,7 +71,7 @@ def toon_aanpassen_lijst():
   conn = get_db()
   conn.row_factory = sqlite3.Row
   c = conn.cursor()
-  c.execute('select * from recepten') 
+  c.execute('select * from recepten order by titel') 
   rows = c.fetchall() 
 
   return render_template('list.html',rows=rows,name="Recepten",edit=True)
@@ -81,7 +81,7 @@ def wijzig_artikel(artikel_id):
   conn = get_db()
   conn.row_factory = sqlite3.Row
   c = conn.cursor()
-  c.execute('select * from recepten where id = ?',(artikel_id)) 
+  c.execute('select * from recepten where id = ?',(artikel_id,)) 
   result = c.fetchone()
   content = dict(result)
   
@@ -94,9 +94,12 @@ def toon_artikel(artikel_id):
   conn = get_db()
   conn.row_factory = sqlite3.Row
   c = conn.cursor()
-  c.execute('select * from recepten where id = ?',(artikel_id)) 
+  c.execute('select * from recepten where id = ?',(artikel_id,)) 
   result = c.fetchone()
   content = dict(result)
+ 
+  content['tijd'] = int(result['tijd'])
+  content['personen'] = int(result['personen'])
   content['ingredienten'] = markdown2.markdown(result['ingredienten'])
   content['bereiding'] = markdown2.markdown(result['bereiding'])
 

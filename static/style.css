@@ -1,3 +1,12 @@
 body{
+}
 
+.logo{
+  width:100%;
+  margin-bottom:2rem;
+  margin-top:2rem;
+}
+h2{
+  margin-top:2rem;
+  font-size:2rem;
 }
