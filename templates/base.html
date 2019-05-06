@@ -13,7 +13,14 @@
 <div class="container">
   <section class="content">
     <header>
+      
       <a href="/"><img class="logo" src="{{url_for ('static', filename='img/image_5c6b274a662590.26351732_optimised.png') }}"/></a>
+      <div class="search-container">
+      <form method="get" action="{{ url_for('es_simple_query') }}">
+        <input type="search" name="q" placeholder="Zoek een recept" />
+        <button>Go</button>
+      </form>
+      </div>
       <h1>{% block header %}{% endblock %}</h1>
     </header>
     {% with messages = get_flashed_messages() %}

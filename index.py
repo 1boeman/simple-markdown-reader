@@ -1,7 +1,7 @@
-from flask import Flask, url_for, request, flash, redirect,session
+from flask import Flask, url_for, request, flash, redirect,session, render_template, json
+from elasticsearch import Elasticsearch
 import markdown2
 import sqlite3
-from flask import render_template
 import glob
 import os
 import io
@@ -24,9 +24,6 @@ def get_db():
 def page_not_found(e):
   return render_template('404.html'), 404
 
-@app.route('/iii')
-def info():
-  return config_file
 
 @app.route('/opslaan',methods = ['POST', 'GET'] )
 def opslaan():
@@ -51,6 +48,23 @@ def verwijderen(artikel_id):
 def toevoegen():
   return render_template("toevoegen.html")
 
+@app.route('/simple_query',strict_slashes=False)
+def es_simple_query():
+  query = request.args.get('q')
+  res = ''
+  if len(query):
+    es = Elasticsearch()
+    res = es.search(index='',
+      body={
+        "query": {
+          "simple_query_string" : {
+              "query": query,
+              "default_operator": "and"
+          }
+        }
+    })
+  #return json.dumps(res)
+  return render_template('search.html',results=res,query=query)
 
 @app.route('/')
 def toon_lijst():
@@ -84,7 +98,6 @@ def wijzig_artikel(artikel_id):
   c.execute('select * from recepten where id = ?',(artikel_id,)) 
   result = c.fetchone()
   content = dict(result)
-  
   return render_template('toevoegen.html',artikel=content)
  
 
@@ -105,6 +118,24 @@ def toon_artikel(artikel_id):
 
   return render_template('artikel.html',content=content)
 
+def dict_factory(cursor, row):
+  d = {}
+  for idx, col in enumerate(cursor.description):
+      d[col[0]] = row[idx]
+  return d
+
+def indexeren(artikel_id):
+  es = Elasticsearch()
+  conn = get_db()
+  conn.row_factory = dict_factory
+  c = conn.cursor()
+  c.execute('select * from recepten where id = ?',(artikel_id,)) 
+  result = c.fetchall()
+  row = result.pop()
+
+  es.index(index='kookboek',id=row['id'],body=row)
+  conn.close()
+
 def dataverwerken(form):
   conn = get_db()
   c = conn.cursor()
@@ -120,7 +151,9 @@ def dataverwerken(form):
     c.execute(''' update recepten
                     set titel = ?, ingredienten = ?, bereiding = ?,  tijd = ?, personen = ?
                       where id = ? ''',values)
-  conn.commit()
+  
+  conn.commit() 
+  indexeren(identifier)
   conn.close()
  
   return 

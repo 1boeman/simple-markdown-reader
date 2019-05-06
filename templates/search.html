@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+  Zoekresultaten {{ query }}
+{% endblock %}
+
+
+{% block header %}
+{% if query %}
+  Zoekresultaten "{{ query }}"
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if results %}
+<ul>
+{% for r in results['hits']['hits'] %}
+  <li class="my-2">
+    
+    <a href="{{url_for ('toon_artikel', artikel_id = r._id)}}">{{ r._source.titel }}</a>
+
+</li>
+{% endfor %}
+</ul>
+{% endif%}
+
+{% endblock %}
