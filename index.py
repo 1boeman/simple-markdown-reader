@@ -36,8 +36,12 @@ def opslaan():
 @app.route('/verwijderen/<artikel_id>')
 def verwijderen(artikel_id):
   conn = get_db()
+  es = Elasticsearch()
+ 
   c = conn.cursor()
   c.execute(''' delete from recepten where id = ? ''', [artikel_id])
+  es.delete(index='kookboek',id=artikel_id)
+ 
   conn.commit()
   conn.close()
  
